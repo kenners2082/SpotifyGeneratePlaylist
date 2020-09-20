@@ -69,36 +69,38 @@ class CreatePlaylist:
                     "spotify_uri": self.get_spotify_uri(song_name, artist)
 
                 }
+ # Step 3 Create a new playlist -- uses Spotify web
 
     def create_playlist(self):
-        """Create A New Playlist"""
+        # Creating the variable to store returned JSON parameters
         request_body = json.dumps({
-            "name": "Youtube Liked Vids",
-            "description": "All Liked Youtube Videos",
-            "public": True
+            "name": "YouTube Playlist",
+            "description": "Like Songs from YouTube",
+            "public": False
         })
 
+        # Endpoint using format method to fill in data within bracket
         query = "https://api.spotify.com/v1/users/{}/playlists".format(
             spotify_user_id)
+
         response = requests.post(
             query,
-            data=request_body,
+            request_body,
             headers={
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(spotify_token)
             }
         )
+        # What JSON gives us back
         response_json = response.json()
 
         # playlist id
         return response_json["id"]
+    # Get URI for song - URI is the link to a song
 
     def get_spotify_uri(self, song_name, artist):
-        """Search For the Song"""
         query = "https://api.spotify.com/v1/search?query=track%3A{}+artist%3A{}&type=track&offset=0&limit=20".format(
-            song_name,
-            artist
-        )
+            song_name, artist)
         response = requests.get(
             query,
             headers={
@@ -106,6 +108,7 @@ class CreatePlaylist:
                 "Authorization": "Bearer {}".format(spotify_token)
             }
         )
+
         response_json = response.json()
         songs = response_json["tracks"]["items"]
 
